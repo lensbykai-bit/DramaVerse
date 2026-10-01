@@ -1,6 +1,4 @@
 (() => {
-  const root = document.documentElement;
-  const themeToggle = document.getElementById('themeToggle');
   const searchInput = document.getElementById('searchInput');
   const movieGrid = document.getElementById('movieGrid');
   const popularGrid = document.getElementById('popularGrid');
@@ -142,14 +140,6 @@
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   }
 
-  function applyTheme(theme) {
-    const mode = theme === 'light' ? 'light' : 'dark';
-    root.dataset.theme = mode;
-    localStorage.setItem('dramaverse-theme', mode);
-    if (themeToggle) themeToggle.textContent = mode === 'light' ? '☀' : '☾';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', mode === 'light' ? '#f4f7fb' : '#07101a');
-  }
-
   async function loadData() {
     try {
       const res = await fetch('data/movies.json', { cache: 'no-store' });
@@ -188,11 +178,8 @@
     if (event.key === 'Escape') closeMovie();
   });
 
-  themeToggle?.addEventListener('click', () => {
-    applyTheme(root.dataset.theme === 'light' ? 'dark' : 'light');
-  });
-
-  applyTheme(localStorage.getItem('dramaverse-theme') || 'dark');
+  document.documentElement.dataset.theme = 'dark';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#07101a');
   document.getElementById('year').textContent = new Date().getFullYear();
   loadData();
 })();
