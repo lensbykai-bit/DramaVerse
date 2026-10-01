@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="km" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DramaVerse Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#07101a;color:#f8fbff;font-family:Inter,Battambang,sans-serif}.wrap{width:min(900px,100%);margin:auto;padding:28px 18px}.head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}.back{padding:10px 14px;border:1px solid #26394e;border-radius:10px;color:#fff;text-decoration:none}.brand{font-size:26px;font-weight:800}.brand span{color:#ff1764}.card{background:#0d1926;border:1px solid #223348;border-radius:18px;padding:20px;margin-bottom:14px}.card h2{font-family:Battambang,sans-serif;margin:0 0 10px}.card p{font-family:Battambang,sans-serif;color:#aebdca;line-height:1.9}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 14px;border-radius:12px;text-decoration:none;font-family:Battambang,sans-serif;font-weight:700;background:linear-gradient(135deg,#ff1764,#d70b82);color:#fff}.btn.secondary{background:#142232;border:1px solid #2c4259}.note{font-size:12px;color:#7f91a4;line-height:1.7}.code{background:#08111b;border:1px solid #1d3045;border-radius:12px;padding:13px;overflow:auto;font:12px/1.7 Consolas,monospace;color:#cbd7e3}@media(max-width:620px){.actions{grid-template-columns:1fr}.head{align-items:flex-start}.brand{font-size:22px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div class="brand">Drama<span>Verse</span> Admin</div>
+      <a class="back" href="./">← ទៅ Website</a>
+    </div>
+
+    <section class="card">
+      <h2>⚙️ កែរឿង និង Link</h2>
+      <p>ចុចប៊ូតុងខាងក្រោម ដើម្បីបើក <b>data/movies.json</b> នៅ GitHub។ អ្នកដែល Login GitHub ហើយមានសិទ្ធិលើ Repository នេះប៉ុណ្ណោះដែលអាច Save ការកែបាន។</p>
+      <div class="actions">
+        <a class="btn" href="https://github.com/lensbykai-bit/DramaVerse/edit/main/data/movies.json" target="_blank" rel="noopener">✏️ Edit Movies</a>
+        <a class="btn secondary" href="https://github.com/lensbykai-bit/DramaVerse" target="_blank" rel="noopener">📁 Open Repository</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🖼️ របៀបប្តូររូប Poster</h2>
+      <p>នៅក្នុងរឿងនីមួយៗ ប្តូរ <b>poster</b> ទៅជា URL រូបភាព។ ប្តូរ <b>watchUrl</b> ទៅ Link Telegram ឬ Link មើលរឿងពេញ។</p>
+      <div class="code">{
+  "title": "ឈ្មោះរឿង",
+  "poster": "https://example.com/poster.jpg",
+  "watchUrl": "https://t.me/your-link",
+  "price": "2,000៛"
+}</div>
+    </section>
+
+    <section class="card">
+      <h2>🔐 សុវត្ថិភាព Admin</h2>
+      <p>ទំព័រ Admin នេះគ្រាន់តែជាផ្លូវកាត់ទៅ GitHub។ វាមិនរក្សា Password ឬ GitHub Token នៅក្នុង Website ទេ។ GitHub ជាអ្នកត្រួតពិនិត្យសិទ្ធិ Save/Edit។</p>
+      <div class="note">កុំដាក់ Personal Access Token ឬ Password នៅក្នុង HTML/JavaScript សាធារណៈ។</div>
+    </section>
+  </div>
+</body>
+</html>
