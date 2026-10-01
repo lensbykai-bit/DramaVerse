@@ -1,4 +1,5 @@
 (() => {
+  const db = window.dvSupabase;
   const searchInput = document.getElementById('searchInput');
   const movieGrid = document.getElementById('movieGrid');
   const popularGrid = document.getElementById('popularGrid');
@@ -140,21 +141,72 @@
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   }
 
+  function applySettings(settings) {
+    if (!settings) return;
+    if (telegramMain && settings.telegram_url) telegramMain.href = settings.telegram_url;
+    const hot = document.querySelector('.dv-hot');
+    const title = document.querySelector('.dv-hero h1');
+    const description = document.querySelector('.dv-hero p');
+    const button = document.querySelector('.dv-watch');
+    if (hot && settings.hero_badge) hot.textContent = settings.hero_badge;
+    if (title && settings.hero_title) title.innerHTML = esc(settings.hero_title).replaceAll('\n', '<br />');
+    if (description && settings.hero_description) description.textContent = settings.hero_description;
+    if (button && settings.hero_button_text) button.textContent = settings.hero_button_text;
+    if (settings.site_name) document.title = `${settings.site_name} — AI Drama`;
+  }
+
+  function mapMovie(row) {
+    return {
+      id: row.id,
+      title: row.title,
+      category: row.category || [],
+      badge: row.badge,
+      price: row.price,
+      rating: row.rating,
+      episode: row.episode,
+      description: row.description,
+      poster: row.poster_url || '',
+      watchUrl: row.watch_url || '#'
+    };
+  }
+
+  async function loadFallback() {
+    const res = await fetch('data/movies.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    movies = Array.isArray(data.movies) ? data.movies : [];
+    if (telegramMain && data.settings?.telegramUrl) telegramMain.href = data.settings.telegramUrl;
+  }
+
   async function loadData() {
     try {
-      const res = await fetch('data/movies.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      movies = Array.isArray(data.movies) ? data.movies : [];
-      if (telegramMain && data.settings?.telegramUrl) telegramMain.href = data.settings.telegramUrl;
-      render();
+      if (!db) throw new Error('Supabase client unavailable');
+      const [movieResult, settingsResult] = await Promise.all([
+        db.from('movies')
+          .select('id,title,category,badge,price,rating,episode,description,poster_url,watch_url,sort_order')
+          .eq('is_published', true)
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false }),
+        db.from('site_settings').select('*').eq('id', 1).maybeSingle()
+      ]);
 
-      const id = decodeURIComponent(location.hash.replace(/^#/, ''));
-      if (id) openMovie(movies.find(m => m.id === id));
+      if (movieResult.error) throw movieResult.error;
+      movies = (movieResult.data || []).map(mapMovie);
+      if (!settingsResult.error) applySettings(settingsResult.data);
     } catch (err) {
-      if (movieGrid) movieGrid.innerHTML = '<div class="loading">មិនអាចផ្ទុក data/movies.json បានទេ។</div>';
-      console.error(err);
+      console.warn('Supabase unavailable, using JSON fallback.', err);
+      try {
+        await loadFallback();
+      } catch (fallbackError) {
+        if (movieGrid) movieGrid.innerHTML = '<div class="loading">មិនអាចផ្ទុកទិន្នន័យរឿងបានទេ។</div>';
+        console.error(fallbackError);
+        return;
+      }
     }
+
+    render();
+    const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (id) openMovie(movies.find(m => m.id === id));
   }
 
   document.querySelectorAll('[data-filter]').forEach(btn => {
