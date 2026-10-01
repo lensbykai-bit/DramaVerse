@@ -3,46 +3,101 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07101a" />
   <title>DramaVerse Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#07101a;color:#f8fbff;font-family:Inter,Battambang,sans-serif}.wrap{width:min(900px,100%);margin:auto;padding:28px 18px}.head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}.back{padding:10px 14px;border:1px solid #26394e;border-radius:10px;color:#fff;text-decoration:none}.brand{font-size:26px;font-weight:800}.brand span{color:#ff1764}.card{background:#0d1926;border:1px solid #223348;border-radius:18px;padding:20px;margin-bottom:14px}.card h2{font-family:Battambang,sans-serif;margin:0 0 10px}.card p{font-family:Battambang,sans-serif;color:#aebdca;line-height:1.9}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 14px;border-radius:12px;text-decoration:none;font-family:Battambang,sans-serif;font-weight:700;background:linear-gradient(135deg,#ff1764,#d70b82);color:#fff}.btn.secondary{background:#142232;border:1px solid #2c4259}.note{font-size:12px;color:#7f91a4;line-height:1.7}.code{background:#08111b;border:1px solid #1d3045;border-radius:12px;padding:13px;overflow:auto;font:12px/1.7 Consolas,monospace;color:#cbd7e3}@media(max-width:620px){.actions{grid-template-columns:1fr}.head{align-items:flex-start}.brand{font-size:22px}}
+    :root{--bg:#07101a;--panel:#0d1926;--panel2:#101f2f;--line:#24384e;--text:#f8fbff;--muted:#92a4b7;--pink:#ff1764;--pink2:#d70b82;--danger:#ff5067;--green:#2ed38b}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,rgba(255,23,100,.08),transparent 24%),var(--bg);color:var(--text);font-family:Inter,Battambang,sans-serif;min-height:100vh}button,input,textarea,select{font:inherit}button{color:inherit}a{color:inherit;text-decoration:none}[hidden]{display:none!important}.wrap{width:min(1180px,100%);margin:auto;padding:24px 16px 50px}.head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{font-size:26px;font-weight:900}.brand span{color:var(--pink)}.head-right{display:flex;align-items:center;gap:9px}.back,.ghost{border:1px solid var(--line);border-radius:11px;background:#101d2b;padding:10px 13px;cursor:pointer}.user{color:var(--muted);font-size:12px}.status{margin:0 0 16px;padding:12px 14px;border-radius:12px;border:1px solid #2c4258;background:#101d2a;font-family:Battambang,sans-serif}.status.success{border-color:rgba(46,211,139,.45);background:rgba(46,211,139,.08);color:#aef3d2}.status.error{border-color:rgba(255,80,103,.45);background:rgba(255,80,103,.08);color:#ffc3cc}.panel{background:linear-gradient(145deg,#0d1926,#0a1520);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 16px 45px rgba(0,0,0,.14)}.panel h2{margin:0 0 12px;font-family:Battambang,sans-serif;font-size:20px}.panel p{font-family:Battambang,sans-serif;color:var(--muted);line-height:1.8}.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-family:Battambang,sans-serif;font-size:12px;color:#cbd6e1}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:11px;background:#08121d;color:#fff;padding:11px 12px;outline:none}.field textarea{min-height:100px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#7c3654;box-shadow:0 0 0 3px rgba(255,23,100,.08)}.btn{border:0;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:Battambang,sans-serif;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff}.btn.secondary{background:#142333;border:1px solid var(--line)}.btn.danger{background:#32131a;border:1px solid #6b2633}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.category-row{display:flex;gap:8px;flex-wrap:wrap}.check{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#0b1723;border-radius:999px;padding:8px 11px;font-size:12px}.switch{display:flex;align-items:center;gap:8px;margin-top:5px}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px}.movie-list{display:flex;flex-direction:column;gap:9px}.movie-row{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #1f3245;background:#0b1722;border-radius:13px;padding:9px}.thumb{width:50px;height:66px;border-radius:9px;background:linear-gradient(145deg,#41203f,#142a3b);background-size:cover;background-position:center}.movie-row-main{min-width:0;display:flex;flex-direction:column;gap:3px}.movie-row-main strong{font-family:Battambang,sans-serif;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.movie-row-main span,.movie-row-main small{font-size:10px;color:var(--muted)}.row-actions{display:flex;gap:6px}.small-btn{border:1px solid var(--line);background:#142230;border-radius:9px;padding:7px 9px;cursor:pointer;font-family:Battambang,sans-serif;font-size:11px}.small-btn.delete{border-color:#5c2630;color:#ff9aaa}.empty{padding:16px;color:var(--muted);font-family:Battambang,sans-serif}.setup-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.section-title h2{margin:0}.hint{font-size:11px;color:var(--muted);font-family:Battambang,sans-serif}@media(max-width:900px){.dashboard-grid{grid-template-columns:1fr}.auth-grid{grid-template-columns:1fr}}@media(max-width:640px){.wrap{padding:16px 10px 40px}.head{align-items:flex-start}.brand{font-size:22px}.user{display:none}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.movie-row{grid-template-columns:42px minmax(0,1fr)}.thumb{width:42px;height:58px}.row-actions{grid-column:1/-1;justify-content:flex-end}.head-right{flex-wrap:wrap;justify-content:flex-end}}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="head">
+    <header class="head">
       <div class="brand">Drama<span>Verse</span> Admin</div>
-      <a class="back" href="./">← ទៅ Website</a>
-    </div>
+      <div class="head-right">
+        <span class="user" id="currentUser"></span>
+        <button class="ghost" id="logoutBtn" type="button">ចាកចេញ</button>
+        <a class="back" href="./">← Website</a>
+      </div>
+    </header>
 
-    <section class="card">
-      <h2>⚙️ កែរឿង និង Link</h2>
-      <p>ចុចប៊ូតុងខាងក្រោម ដើម្បីបើក <b>data/movies.json</b> នៅ GitHub។ អ្នកដែល Login GitHub ហើយមានសិទ្ធិលើ Repository នេះប៉ុណ្ណោះដែលអាច Save ការកែបាន។</p>
-      <div class="actions">
-        <a class="btn" href="https://github.com/lensbykai-bit/DramaVerse/edit/main/data/movies.json" target="_blank" rel="noopener">✏️ Edit Movies</a>
-        <a class="btn secondary" href="https://github.com/lensbykai-bit/DramaVerse" target="_blank" rel="noopener">📁 Open Repository</a>
+    <div class="status" id="statusBox" hidden></div>
+
+    <section id="authView">
+      <div class="auth-grid">
+        <form class="panel" id="loginForm">
+          <h2>🔐 ចូល Admin</h2>
+          <p>Login ដោយ Email និង Password របស់ Admin។</p>
+          <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="email" required /></div>
+          <div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required /></div>
+          <div class="actions"><button class="btn" type="submit">ចូល Admin</button></div>
+        </form>
+
+        <form class="panel" id="signupForm">
+          <h2>✨ បង្កើត Admin Account ដំបូង</h2>
+          <p>ប្រើតែពេល Setup លើកដំបូង។ បន្ទាប់ពីបង្កើត Account ត្រូវបញ្ចូល Setup Code ម្តងទៀត។</p>
+          <div class="field"><label>Email</label><input id="signupEmail" type="email" autocomplete="email" required /></div>
+          <div class="field"><label>Password (យ៉ាងតិច 8 តួ)</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="8" required /></div>
+          <div class="actions"><button class="btn secondary" type="submit">បង្កើត Account</button></div>
+        </form>
       </div>
     </section>
 
-    <section class="card">
-      <h2>🖼️ របៀបប្តូររូប Poster</h2>
-      <p>នៅក្នុងរឿងនីមួយៗ ប្តូរ <b>poster</b> ទៅជា URL រូបភាព។ ប្តូរ <b>watchUrl</b> ទៅ Link Telegram ឬ Link មើលរឿងពេញ។</p>
-      <div class="code">{
-  "title": "ឈ្មោះរឿង",
-  "poster": "https://example.com/poster.jpg",
-  "watchUrl": "https://t.me/your-link",
-  "price": "2,000៛"
-}</div>
+    <section class="panel" id="activationView" hidden>
+      <h2>🛡️ បើកសិទ្ធិ Admin</h2>
+      <p>Account នេះបាន Login ហើយ ប៉ុន្តែមិនទាន់មានសិទ្ធិ Admin ទេ។ បញ្ចូល Setup Code ដំបូងដែលបានផ្ដល់ឲ្យអ្នក។</p>
+      <form id="activationForm">
+        <div class="field"><label>Setup Code</label><input class="setup-code" id="setupCode" type="password" autocomplete="off" required /></div>
+        <div class="actions"><button class="btn" type="submit">បើក Admin</button></div>
+      </form>
     </section>
 
-    <section class="card">
-      <h2>🔐 សុវត្ថិភាព Admin</h2>
-      <p>ទំព័រ Admin នេះគ្រាន់តែជាផ្លូវកាត់ទៅ GitHub។ វាមិនរក្សា Password ឬ GitHub Token នៅក្នុង Website ទេ។ GitHub ជាអ្នកត្រួតពិនិត្យសិទ្ធិ Save/Edit។</p>
-      <div class="note">កុំដាក់ Personal Access Token ឬ Password នៅក្នុង HTML/JavaScript សាធារណៈ។</div>
-    </section>
+    <main id="dashboardView" hidden>
+      <section class="panel">
+        <div class="section-title"><h2>🌐 កែផ្នែក Website</h2><span class="hint">Save ហើយ Website នឹងអានពី Supabase</span></div>
+        <form id="settingsForm" class="form-grid">
+          <div class="field"><label>ឈ្មោះ Website</label><input id="siteName" required /></div>
+          <div class="field"><label>Telegram URL</label><input id="telegramUrl" type="url" placeholder="https://t.me/..." /></div>
+          <div class="field"><label>Hero Badge</label><input id="heroBadge" /></div>
+          <div class="field"><label>Hero Button</label><input id="heroButtonText" /></div>
+          <div class="field full"><label>Hero Title</label><textarea id="heroTitle"></textarea></div>
+          <div class="field full"><label>Hero Description</label><textarea id="heroDescription"></textarea></div>
+          <div class="field full"><button class="btn" type="submit">💾 Save Website</button></div>
+        </form>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="panel">
+          <div class="section-title"><h2>🎬 រឿងទាំងអស់</h2><span class="hint">Edit / Delete ដោយផ្ទាល់</span></div>
+          <div class="movie-list" id="movieList"><div class="empty">កំពុងផ្ទុក...</div></div>
+        </section>
+
+        <section class="panel">
+          <h2 id="movieFormTitle">➕ បន្ថែមរឿងថ្មី</h2>
+          <form id="movieForm" class="form-grid">
+            <div class="field full"><label>ចំណងជើងរឿង</label><input id="movieTitle" required /></div>
+            <div class="field"><label>Badge</label><select id="movieBadge"><option>NEW</option><option>AI</option><option>VIP</option></select></div>
+            <div class="field"><label>តម្លៃ</label><input id="moviePrice" /></div>
+            <div class="field"><label>Rating</label><input id="movieRating" type="number" min="0" max="5" step="0.1" /></div>
+            <div class="field"><label>លំដាប់</label><input id="movieSort" type="number" /></div>
+            <div class="field full"><label>Episode</label><input id="movieEpisode" /></div>
+            <div class="field full"><label>Categories</label><div class="category-row"><label class="check"><input type="checkbox" name="category" value="AI" /> AI</label><label class="check"><input type="checkbox" name="category" value="VIP" /> VIP</label><label class="check"><input type="checkbox" name="category" value="system" /> ប្រព័ន្ធ</label><label class="check"><input type="checkbox" name="category" value="new" /> រឿងថ្មី</label></div></div>
+            <div class="field full"><label>Poster URL</label><input id="moviePoster" type="url" placeholder="https://...jpg" /></div>
+            <div class="field full"><label>Watch / Telegram URL</label><input id="movieWatchUrl" placeholder="https://t.me/..." /></div>
+            <div class="field full"><label>Description</label><textarea id="movieDescription"></textarea></div>
+            <div class="field full"><label class="switch"><input id="moviePublished" type="checkbox" checked /> បង្ហាញលើ Website</label></div>
+            <div class="field full"><div class="actions"><button class="btn" type="submit">💾 Save រឿង</button><button class="btn secondary" id="cancelEdit" type="button" hidden>បោះបង់ការកែ</button></div></div>
+          </form>
+        </section>
+      </div>
+    </main>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
