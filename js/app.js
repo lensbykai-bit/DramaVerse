@@ -1,0 +1,198 @@
+(() => {
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const searchInput = document.getElementById('searchInput');
+  const movieGrid = document.getElementById('movieGrid');
+  const popularGrid = document.getElementById('popularGrid');
+  const topList = document.getElementById('topList');
+  const movieCount = document.getElementById('movieCount');
+  const modal = document.getElementById('movieModal');
+  const closeBtn = document.getElementById('movieModalClose');
+  const telegramMain = document.getElementById('telegramMain');
+
+  let movies = [];
+  let activeFilter = 'all';
+
+  function esc(value = '') {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function normalizeCategory(movie) {
+    return (movie.category || []).map(v => String(v).toLowerCase());
+  }
+
+  function hasFilter(movie, filter) {
+    if (filter === 'all') return true;
+    return normalizeCategory(movie).includes(filter.toLowerCase());
+  }
+
+  function filteredMovies() {
+    const q = (searchInput?.value || '').trim().toLowerCase();
+    return movies.filter(movie => {
+      const filterOk = hasFilter(movie, activeFilter);
+      const textOk = !q || `${movie.title} ${movie.description || ''} ${(movie.category || []).join(' ')}`.toLowerCase().includes(q);
+      return filterOk && textOk;
+    });
+  }
+
+  function posterStyle(movie) {
+    return movie.poster
+      ? `style="background-image:linear-gradient(180deg,transparent 45%,rgba(4,8,13,.08) 54%,rgba(4,8,13,.93) 100%),url('${esc(movie.poster)}')"`
+      : '';
+  }
+
+  function badgeClass(movie) {
+    const badge = String(movie.badge || '').toLowerCase();
+    if (badge === 'vip') return 'vip';
+    if (badge === 'ai') return 'ai';
+    return '';
+  }
+
+  function card(movie) {
+    const first = (movie.title || 'D').trim().charAt(0) || 'D';
+    return `
+      <article class="movie-card" data-id="${esc(movie.id)}">
+        <div class="movie-poster" ${posterStyle(movie)}>
+          ${movie.poster ? '' : `<span class="poster-letter">${esc(first)}</span>`}
+          <span class="movie-badge ${badgeClass(movie)}">${esc(movie.badge || 'NEW')}</span>
+          <div class="movie-overlay"><div class="movie-title">${esc(movie.title)}</div></div>
+        </div>
+        <div class="movie-info">
+          <span class="stars">★★★★★</span><span class="score">${esc(movie.rating || '4.9')}</span>
+          <div class="episode">${esc(movie.episode || 'រឿងពេញ')}</div>
+        </div>
+      </article>`;
+  }
+
+  function topItem(movie, index) {
+    const style = movie.poster ? `style="background-image:url('${esc(movie.poster)}')"` : '';
+    return `
+      <div class="topitem" data-id="${esc(movie.id)}">
+        <span class="rank ${index === 0 ? 'first' : ''}">${index + 1}</span>
+        <span class="topthumb" ${style}></span>
+        <span><div class="topname">${esc(movie.title)}</div><div class="topsmall">★ ${esc(movie.rating || '4.9')}</div></span>
+      </div>`;
+  }
+
+  function render() {
+    const list = filteredMovies();
+    if (movieGrid) movieGrid.innerHTML = list.length ? list.map(card).join('') : '<div class="loading">រកមិនឃើញរឿងទេ។</div>';
+    if (movieCount) movieCount.textContent = `${list.length} រឿង`;
+
+    const popular = [...movies]
+      .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+      .slice(0, 6);
+
+    if (popularGrid) popularGrid.innerHTML = popular.map(card).join('');
+    if (topList) topList.innerHTML = popular.slice(0, 5).map(topItem).join('');
+  }
+
+  function setFilter(filter) {
+    activeFilter = filter || 'all';
+    document.querySelectorAll('[data-filter]').forEach(el => {
+      el.classList.toggle('active', el.dataset.filter === activeFilter);
+    });
+    render();
+    document.getElementById('latest')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function openMovie(movie) {
+    if (!movie || !modal) return;
+    const poster = document.getElementById('modalPoster');
+    document.getElementById('modalTitle').textContent = movie.title || 'DramaVerse';
+    document.getElementById('modalBadge').textContent = movie.badge || 'DramaVerse';
+    document.getElementById('modalRating').textContent = `★★★★★ ${movie.rating || '4.9'}`;
+    document.getElementById('modalEpisode').textContent = movie.episode || 'រឿងពេញ';
+    document.getElementById('modalDescription').textContent = movie.description || '';
+    document.getElementById('modalPrice').textContent = movie.price || '2,000៛';
+
+    if (poster) {
+      poster.style.backgroundImage = movie.poster
+        ? `linear-gradient(180deg,transparent 45%,rgba(4,8,13,.1) 100%),url('${movie.poster}')`
+        : 'linear-gradient(155deg,#2a1531,#182438 55%,#0d1926)';
+    }
+
+    const watchBtn = document.getElementById('modalWatch');
+    watchBtn.href = movie.watchUrl || '#';
+    watchBtn.classList.toggle('disabled', !movie.watchUrl || movie.watchUrl === '#');
+
+    const copyBtn = document.getElementById('modalCopy');
+    copyBtn.onclick = async () => {
+      const shareUrl = `${location.origin}${location.pathname}#${encodeURIComponent(movie.id)}`;
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        copyBtn.textContent = '✓ Copied';
+        setTimeout(() => (copyBtn.textContent = '🔗 Copy Link'), 1200);
+      } catch (_) {}
+    };
+
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    history.replaceState(null, '', `#${encodeURIComponent(movie.id)}`);
+  }
+
+  function closeMovie() {
+    modal?.classList.remove('show');
+    document.body.style.overflow = '';
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  function applyTheme(theme) {
+    const mode = theme === 'light' ? 'light' : 'dark';
+    root.dataset.theme = mode;
+    localStorage.setItem('dramaverse-theme', mode);
+    if (themeToggle) themeToggle.textContent = mode === 'light' ? '☀' : '☾';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', mode === 'light' ? '#f4f7fb' : '#07101a');
+  }
+
+  async function loadData() {
+    try {
+      const res = await fetch('data/movies.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      movies = Array.isArray(data.movies) ? data.movies : [];
+      if (telegramMain && data.settings?.telegramUrl) telegramMain.href = data.settings.telegramUrl;
+      render();
+
+      const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+      if (id) openMovie(movies.find(m => m.id === id));
+    } catch (err) {
+      if (movieGrid) movieGrid.innerHTML = '<div class="loading">មិនអាចផ្ទុក data/movies.json បានទេ។</div>';
+      console.error(err);
+    }
+  }
+
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => setFilter(btn.dataset.filter));
+  });
+
+  searchInput?.addEventListener('input', render);
+
+  document.addEventListener('click', event => {
+    const target = event.target.closest('[data-id]');
+    if (!target) return;
+    const movie = movies.find(m => m.id === target.dataset.id);
+    if (movie) openMovie(movie);
+  });
+
+  closeBtn?.addEventListener('click', closeMovie);
+  modal?.addEventListener('click', event => {
+    if (event.target === modal) closeMovie();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMovie();
+  });
+
+  themeToggle?.addEventListener('click', () => {
+    applyTheme(root.dataset.theme === 'light' ? 'dark' : 'light');
+  });
+
+  applyTheme(localStorage.getItem('dramaverse-theme') || 'dark');
+  document.getElementById('year').textContent = new Date().getFullYear();
+  loadData();
+})();
