@@ -117,8 +117,29 @@
     }
 
     const watchBtn = document.getElementById('modalWatch');
-    watchBtn.href = movie.watchUrl || '#';
-    watchBtn.classList.toggle('disabled', !movie.watchUrl || movie.watchUrl === '#');
+    watchBtn.disabled = false;
+    watchBtn.textContent = '💳 ទិញរឿង • DramaVers Pay';
+    watchBtn.onclick = async () => {
+      if (!db) return;
+      const original = watchBtn.textContent;
+      watchBtn.disabled = true;
+      watchBtn.textContent = 'កំពុងបង្កើត Order...';
+      try {
+        const { data, error } = await db.rpc('create_checkout_order', {
+          p_movie_id: movie.id,
+          p_customer_contact: null
+        });
+        if (error) throw error;
+        const order = Array.isArray(data) ? data[0] : data;
+        if (!order?.order_id || !order?.access_token) throw new Error('មិនអាចបង្កើត Order បានទេ។');
+        location.href = `pay.html#${order.order_id}:${order.access_token}`;
+      } catch (error) {
+        console.error(error);
+        alert(error.message || 'មិនអាចបង្កើត Order បានទេ។');
+        watchBtn.disabled = false;
+        watchBtn.textContent = original;
+      }
+    };
 
     const copyBtn = document.getElementById('modalCopy');
     copyBtn.onclick = async () => {
@@ -162,6 +183,7 @@
       category: row.category || [],
       badge: row.badge,
       price: row.price,
+      priceKhr: row.price_khr || Number(String(row.price || '').replace(/[^0-9]/g, '')) || 2000,
       rating: row.rating,
       episode: row.episode,
       description: row.description,
@@ -183,7 +205,7 @@
       if (!db) throw new Error('Supabase client unavailable');
       const [movieResult, settingsResult] = await Promise.all([
         db.from('movies')
-          .select('id,title,category,badge,price,rating,episode,description,poster_url,watch_url,sort_order')
+          .select('id,title,category,badge,price,price_khr,rating,episode,description,poster_url,watch_url,sort_order')
           .eq('is_published', true)
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: false }),
