@@ -71,7 +71,7 @@
 
 
       <section class="panel">
-        <div class="section-title"><h2>💳 DramaVers Pay</h2><span class="hint">កំណត់ QR និងព័ត៌មានទទួលប្រាក់</span></div>
+        <div class="section-title"><h2>💳 DramaVers Pay</h2><span class="hint">Bakong KHQR + Auto Verify + Auto Telegram</span></div>
         <form id="paymentSettingsForm" class="form-grid">
           <div class="field"><label>Payment Provider</label><input id="payProvider" placeholder="KHQR" /></div>
           <div class="field"><label>Merchant Name</label><input id="payMerchant" placeholder="DramaVerse" /></div>
@@ -79,6 +79,15 @@
           <div class="field"><label>QR Image URL</label><input id="payQrUrl" type="url" placeholder="https://.../khqr.png" /></div>
           <div class="field full"><label>សេចក្តីណែនាំទូទាត់</label><textarea id="payInstructions"></textarea></div>
           <div class="field full"><label class="switch"><input id="payEnabled" type="checkbox" checked /> បើក DramaVers Pay</label></div>
+
+          <div class="field full"><div style="height:1px;background:var(--line);margin:6px 0 2px"></div></div>
+          <div class="field"><label>Bakong Account ID</label><input id="bakongAccountId" placeholder="yourname@bank" /></div>
+          <div class="field"><label>Merchant / Account Name</label><input id="bakongMerchantName" placeholder="DramaVerse" /></div>
+          <div class="field"><label>Merchant City</label><input id="bakongMerchantCity" placeholder="PHNOM PENH" /></div>
+          <div class="field"><label>Bakong API Base URL</label><input id="bakongApiBase" placeholder="https://api-bakong.nbc.gov.kh" /></div>
+          <div class="field full"><label>Bakong Open API Token <span style="color:var(--muted)">(ទុកទទេ = រក្សា Token ចាស់)</span></label><input id="bakongApiToken" type="password" autocomplete="new-password" placeholder="Paste token from Bakong Open API" /></div>
+          <div class="field full"><label class="switch"><input id="bakongAutoEnabled" type="checkbox" /> បើក Auto Verify Bakong → Auto Telegram</label></div>
+          <div class="field full"><p style="margin:0;color:var(--muted);font-size:11px">Token ត្រូវបានរក្សាទុកក្នុង Supabase ដោយ RLS ហើយមិនបង្ហាញលើ Website សាធារណៈទេ។</p></div>
           <div class="field full"><button class="btn" type="submit">💾 Save DramaVers Pay</button></div>
         </form>
       </section>
@@ -106,7 +115,7 @@
             <div class="field full"><label>Episode</label><input id="movieEpisode" /></div>
             <div class="field full"><label>Categories</label><div class="category-row"><label class="check"><input type="checkbox" name="category" value="AI" /> AI</label><label class="check"><input type="checkbox" name="category" value="VIP" /> VIP</label><label class="check"><input type="checkbox" name="category" value="system" /> ប្រព័ន្ធ</label><label class="check"><input type="checkbox" name="category" value="new" /> រឿងថ្មី</label></div></div>
             <div class="field full"><label>Poster URL</label><input id="moviePoster" type="url" placeholder="https://...jpg" /></div>
-            <div class="field full"><label>Watch / Telegram URL</label><input id="movieWatchUrl" placeholder="https://t.me/..." /></div>
+            <div class="field full"><label>Telegram Full Movie Link <span style="color:var(--muted)">(បង្ហាញតែបន្ទាប់ពី Paid)</span></label><input id="movieWatchUrl" placeholder="https://t.me/..." /></div>
             <div class="field full"><label>Description</label><textarea id="movieDescription"></textarea></div>
             <div class="field full"><label class="switch"><input id="moviePublished" type="checkbox" checked /> បង្ហាញលើ Website</label></div>
             <div class="field full"><div class="actions"><button class="btn" type="submit">💾 Save រឿង</button><button class="btn secondary" id="cancelEdit" type="button" hidden>បោះបង់ការកែ</button></div></div>
