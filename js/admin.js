@@ -10,6 +10,8 @@
   const movieList = $('movieList');
   const settingsForm = $('settingsForm');
   const currentUser = $('currentUser');
+  const paymentSettingsForm = $('paymentSettingsForm');
+  const ordersList = $('ordersList');
 
   let editingId = null;
   const ADMIN_REDIRECT_URL = 'https://lensbykai-bit.github.io/DramaVerse/admin.html';
@@ -74,7 +76,7 @@
     }
 
     showOnly(dashboardView);
-    await Promise.all([loadMovies(), loadSettings()]);
+    await Promise.all([loadMovies(), loadSettings(), loadPaymentSettings(), loadOrders()]);
   }
 
   async function login(event) {
@@ -179,6 +181,104 @@
     showStatus('បានរក្សាទុកការកែ Website រួចហើយ។', 'success');
   }
 
+  async function loadPaymentSettings() {
+    if (!paymentSettingsForm) return;
+    const { data, error } = await db
+      .from('payment_settings')
+      .select('*')
+      .eq('id', 1)
+      .maybeSingle();
+
+    if (error || !data) return;
+    $('payProvider').value = data.provider_name || 'KHQR';
+    $('payMerchant').value = data.merchant_name || 'DramaVerse';
+    $('payAccountLabel').value = data.account_label || '';
+    $('payQrUrl').value = data.qr_image_url || '';
+    $('payInstructions').value = data.instructions || '';
+    $('payEnabled').checked = !!data.enabled;
+  }
+
+  async function savePaymentSettings(event) {
+    event.preventDefault();
+    clearStatus();
+
+    const payload = {
+      provider_name: $('payProvider').value.trim() || 'KHQR',
+      merchant_name: $('payMerchant').value.trim() || 'DramaVerse',
+      account_label: $('payAccountLabel').value.trim(),
+      qr_image_url: $('payQrUrl').value.trim(),
+      instructions: $('payInstructions').value.trim(),
+      enabled: $('payEnabled').checked,
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await db
+      .from('payment_settings')
+      .update(payload)
+      .eq('id', 1);
+
+    if (error) return showStatus(error.message, 'error');
+    showStatus('បានរក្សាទុក DramaVers Pay រួចហើយ។', 'success');
+  }
+
+  async function loadOrders() {
+    if (!ordersList) return;
+
+    const { data, error } = await db
+      .from('orders')
+      .select('id,order_code,movie_title,amount_khr,currency,status,customer_contact,created_at,paid_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) {
+      ordersList.innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    if (!data?.length) {
+      ordersList.innerHTML = '<div class="empty">មិនទាន់មាន Order ទេ។</div>';
+      return;
+    }
+
+    const money = value => new Intl.NumberFormat('km-KH').format(Number(value || 0)) + '៛';
+
+    ordersList.innerHTML = data.map(order => `
+      <article class="order-row" data-order-id="${order.id}">
+        <div class="order-main">
+          <strong>${escapeHtml(order.order_code)} · ${escapeHtml(order.movie_title)}</strong>
+          <span>${money(order.amount_khr)} · ${new Date(order.created_at).toLocaleString()}</span>
+          <small>${escapeHtml(order.customer_contact || 'No contact')}</small>
+        </div>
+        <div class="order-actions">
+          <span class="pill ${escapeHtml(order.status)}">${escapeHtml(order.status)}</span>
+          ${order.status === 'pending' ? '<button class="small-btn mark-paid" type="button">Mark Paid</button>' : ''}
+        </div>
+      </article>
+    `).join('');
+
+    ordersList.querySelectorAll('.mark-paid').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const orderId = btn.closest('[data-order-id]').dataset.orderId;
+        const ref = prompt('Payment reference (optional):', '') ?? '';
+        if (!confirm('បានពិនិត្យថាប្រាក់ចូលពិតប្រាកដហើយមែនទេ?')) return;
+
+        btn.disabled = true;
+        const { error: paidError } = await db.rpc('admin_mark_order_paid', {
+          p_order_id: orderId,
+          p_reference: ref
+        });
+
+        if (paidError) {
+          btn.disabled = false;
+          return showStatus(paidError.message, 'error');
+        }
+
+        showStatus('Order ត្រូវបានកំណត់ជា Paid រួចហើយ។', 'success');
+        await loadOrders();
+      });
+    });
+  }
+
   function resetMovieForm() {
     editingId = null;
     movieForm.reset();
@@ -202,6 +302,7 @@
       category: categoriesFromForm(),
       badge: $('movieBadge').value,
       price: $('moviePrice').value.trim() || '2,000៛',
+      price_khr: Number(String($('moviePrice').value || '2000').replace(/[^0-9]/g, '')) || 2000,
       rating: Number($('movieRating').value || 4.9),
       episode: $('movieEpisode').value.trim() || 'រឿងពេញ',
       description: $('movieDescription').value.trim(),
@@ -310,6 +411,8 @@
   $('activationForm')?.addEventListener('submit', activateAdmin);
   $('logoutBtn')?.addEventListener('click', logout);
   settingsForm?.addEventListener('submit', saveSettings);
+  paymentSettingsForm?.addEventListener('submit', savePaymentSettings);
+  $('refreshOrders')?.addEventListener('click', loadOrders);
   movieForm?.addEventListener('submit', saveMovie);
   $('cancelEdit')?.addEventListener('click', resetMovieForm);
 
