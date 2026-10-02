@@ -125,14 +125,14 @@
       watchBtn.disabled = true;
       watchBtn.textContent = 'កំពុងបង្កើត Order...';
       try {
-        const { data, error } = await db.rpc('create_checkout_order', {
-          p_movie_id: movie.id,
-          p_customer_contact: null
+        const { data, error } = await db.functions.invoke('bakong-order', {
+          body: { action: 'create', movieId: movie.id }
         });
         if (error) throw error;
-        const order = Array.isArray(data) ? data[0] : data;
-        if (!order?.order_id || !order?.access_token) throw new Error('មិនអាចបង្កើត Order បានទេ។');
-        location.href = `pay.html#${order.order_id}:${order.access_token}`;
+        if (!data?.order_id || !data?.access_token) {
+          throw new Error(data?.error || 'មិនអាចបង្កើត Bakong Order បានទេ។');
+        }
+        location.href = `pay.html#${data.order_id}:${data.access_token}`;
       } catch (error) {
         console.error(error);
         alert(error.message || 'មិនអាចបង្កើត Order បានទេ។');
