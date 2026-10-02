@@ -188,7 +188,7 @@
       episode: row.episode,
       description: row.description,
       poster: row.poster_url || '',
-      watchUrl: row.watch_url || '#'
+      watchUrl: '#'
     };
   }
 
@@ -205,7 +205,7 @@
       if (!db) throw new Error('Supabase client unavailable');
       const [movieResult, settingsResult] = await Promise.all([
         db.from('movies')
-          .select('id,title,category,badge,price,price_khr,rating,episode,description,poster_url,watch_url,sort_order')
+          .select('id,title,category,badge,price,price_khr,rating,episode,description,poster_url,sort_order')
           .eq('is_published', true)
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: false }),
