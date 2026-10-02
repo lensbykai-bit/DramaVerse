@@ -330,11 +330,7 @@
   }
 
   async function loadMovies() {
-    const { data, error } = await db
-      .from('movies')
-      .select('*')
-      .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: false });
+    const { data, error } = await db.rpc('admin_list_movies');
 
     if (error) {
       movieList.innerHTML = `<div class="empty">${error.message}</div>`;
