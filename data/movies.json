@@ -7,122 +7,140 @@
     {
       "id": "dv-001",
       "title": "កំពូលស្ដេចខ្លាឦសាន",
-      "category": ["AI", "VIP", "new"],
+      "category": [
+        "AI",
+        "VIP",
+        "new"
+      ],
       "badge": "VIP",
       "price": "2,000៛",
       "rating": 4.9,
       "episode": "រឿងពេញ",
       "description": "រឿង AI ថ្មីសម្រាប់ DramaVerse។ អ្នកអាចកែចំណងជើង ព័ត៌មាន និងតំណមើលរឿងនៅក្នុង data/movies.json។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-002",
       "title": "អ្នករើសអេតចាយ ភ្នែកទិព្វ",
-      "category": ["AI", "system", "new"],
+      "category": [
+        "AI",
+        "system",
+        "new"
+      ],
       "badge": "AI",
       "price": "2,000៛",
       "rating": 4.9,
       "episode": "រឿងពេញ",
       "description": "រឿងប្រព័ន្ធ និងការផ្លាស់ប្តូរជីវិត។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-003",
       "title": "នំចាំងឆ្លងភព",
-      "category": ["AI", "new"],
+      "category": [
+        "AI",
+        "new"
+      ],
       "badge": "NEW",
       "price": "1,500៛",
       "rating": 4.8,
       "episode": "រឿងពេញ",
       "description": "រឿង AI បែបដំណើរផ្សងព្រេង និងឆ្លងភព។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-004",
       "title": "ប្រព័ន្ធផ្តល់រង្វាន់ AI",
-      "category": ["AI", "system"],
+      "category": [
+        "AI",
+        "system"
+      ],
       "badge": "AI",
       "price": "2,000៛",
       "rating": 4.8,
       "episode": "ភាគ 1 - 80",
       "description": "រឿងប្រព័ន្ធ AI ដែលផ្តល់បេសកកម្ម និងរង្វាន់។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-005",
       "title": "ជីវិតថ្មីជាមួយប្រព័ន្ធ",
-      "category": ["system", "VIP"],
+      "category": [
+        "system",
+        "VIP"
+      ],
       "badge": "VIP",
       "price": "2,500៛",
       "rating": 4.7,
       "episode": "រឿងពេញ",
       "description": "ចាប់ផ្តើមជីវិតថ្មីជាមួយប្រព័ន្ធដែលជួយបើកសមត្ថភាពថ្មីៗ។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-006",
       "title": "AI ប្រាប់ខ្ញុំអនាគត",
-      "category": ["AI"],
+      "category": [
+        "AI"
+      ],
       "badge": "AI",
       "price": "2,000៛",
       "rating": 4.9,
       "episode": "រឿងពេញ",
       "description": "AI មួយអាចផ្តល់ព័ត៌មានអំពីអនាគត និងបង្កើតការផ្លាស់ប្តូរដ៏ធំ។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-007",
       "title": "កំពូលអ្នកវិនិយោគ",
-      "category": ["VIP"],
+      "category": [
+        "VIP"
+      ],
       "badge": "VIP",
       "price": "3,000៛",
       "rating": 4.8,
       "episode": "រឿងពេញ",
       "description": "រឿងជីវិត និងការកសាងអាជីវកម្មពីចំណុចសូន្យ។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-008",
       "title": "អ្នកមានអំណាចក្នុងទីក្រុង",
-      "category": ["AI", "VIP"],
+      "category": [
+        "AI",
+        "VIP"
+      ],
       "badge": "VIP",
       "price": "2,500៛",
       "rating": 4.7,
       "episode": "ភាគ 1 - 90",
       "description": "រឿង AI ពេញនិយមសម្រាប់បង្ហាញជាគំរូក្នុង DramaVerse។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-009",
       "title": "ប្រធានក្រុមហ៊ុនសម្ងាត់",
-      "category": ["new"],
+      "category": [
+        "new"
+      ],
       "badge": "NEW",
       "price": "2,000៛",
       "rating": 4.6,
       "episode": "រឿងពេញ",
       "description": "រឿងថ្មីដែលអាចកែព័ត៌មានបានតាម Admin។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     },
     {
       "id": "dv-010",
       "title": "ត្រឡប់មកផ្លាស់ប្តូរជីវិត",
-      "category": ["system"],
+      "category": [
+        "system"
+      ],
       "badge": "NEW",
       "price": "2,000៛",
       "rating": 4.8,
       "episode": "រឿងពេញ",
       "description": "រឿងបែបប្រព័ន្ធ និងចាប់ផ្តើមជីវិតម្តងទៀត។",
-      "poster": "",
-      "watchUrl": "#"
+      "poster": ""
     }
   ]
 }
