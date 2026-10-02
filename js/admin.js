@@ -183,61 +183,71 @@
 
   async function loadPaymentSettings() {
     if (!paymentSettingsForm) return;
+
     const [publicResult, bakongResult] = await Promise.all([
-      db.from('payment_settings').select('*').eq('id', 1).maybeSingle(),
+      db.from('payment_settings')
+        .select('khqr_expiry_minutes')
+        .eq('id', 1)
+        .maybeSingle(),
       db.from('bakong_config')
-        .select('api_base_url,account_id,merchant_name,merchant_city,enabled')
+        .select('account_id,merchant_name,merchant_city,enabled')
         .eq('id', 1)
         .maybeSingle()
     ]);
 
-    const data = publicResult.data;
-    if (data) {
-      $('payProvider').value = data.provider_name || 'KHQR';
-      $('payMerchant').value = data.merchant_name || 'DramaVerse';
-      $('payAccountLabel').value = data.account_label || '';
-      $('payQrUrl').value = data.qr_image_url || '';
-      $('payInstructions').value = data.instructions || '';
-      $('payEnabled').checked = !!data.enabled;
-    }
+    const publicData = publicResult.data || {};
+    const bakong = bakongResult.data || {};
 
-    const bakong = bakongResult.data;
-    if (bakong) {
-      $('bakongApiBase').value = bakong.api_base_url || 'https://api-bakong.nbc.gov.kh';
-      $('bakongAccountId').value = bakong.account_id || '';
-      $('bakongMerchantName').value = bakong.merchant_name || 'DramaVerse';
-      $('bakongMerchantCity').value = bakong.merchant_city || 'PHNOM PENH';
-      $('bakongAutoEnabled').checked = !!bakong.enabled;
-      $('bakongApiToken').value = '';
-    }
+    $('bakongAccountId').value = bakong.account_id || '';
+    $('bakongMerchantName').value = bakong.merchant_name || 'DramaVerse';
+    $('bakongMerchantCity').value = bakong.merchant_city || 'PHNOM PENH';
+    $('bakongExpiryMinutes').value = publicData.khqr_expiry_minutes || 15;
+    $('bakongAutoEnabled').checked = bakong.enabled !== false;
+    $('bakongApiToken').value = '';
   }
 
   async function savePaymentSettings(event) {
     event.preventDefault();
     clearStatus();
 
+    const accountId = $('bakongAccountId').value.trim();
+    const merchantName = $('bakongMerchantName').value.trim() || 'DramaVerse';
+    const merchantCity = $('bakongMerchantCity').value.trim() || 'PHNOM PENH';
+    const expiry = Math.min(60, Math.max(1, Number($('bakongExpiryMinutes').value || 15)));
+    const enabled = $('bakongAutoEnabled').checked;
+    const newToken = $('bakongApiToken').value.trim();
+
+    if (enabled && !accountId) {
+      return showStatus('សូមបញ្ចូល Bakong Account ID។', 'error');
+    }
+
     const now = new Date().toISOString();
     const publicPayload = {
-      provider_name: $('payProvider').value.trim() || 'KHQR',
-      merchant_name: $('payMerchant').value.trim() || 'DramaVerse',
-      account_label: $('payAccountLabel').value.trim(),
-      qr_image_url: $('payQrUrl').value.trim(),
-      instructions: $('payInstructions').value.trim(),
-      enabled: $('payEnabled').checked,
+      provider_name: 'KHQR',
+      khqr_mode: 'individual',
+      bakong_account_id: accountId,
+      merchant_name: merchantName,
+      merchant_city: merchantCity,
+      store_label: 'DramaVerse',
+      terminal_label: 'WEB',
+      merchant_category_code: '5999',
+      khqr_expiry_minutes: expiry,
+      account_label: 'Auto KHQR',
+      instructions: 'ស្កេន KHQR ហើយបង់តាមចំនួនទឹកប្រាក់ដែលបានបង្ហាញ។ ប្រព័ន្ធនឹងពិនិត្យការទូទាត់ដោយស្វ័យប្រវត្តិ។',
+      enabled,
       updated_at: now
     };
 
     const bakongPayload = {
       id: 1,
-      api_base_url: $('bakongApiBase').value.trim() || 'https://api-bakong.nbc.gov.kh',
-      account_id: $('bakongAccountId').value.trim(),
-      merchant_name: $('bakongMerchantName').value.trim() || 'DramaVerse',
-      merchant_city: $('bakongMerchantCity').value.trim() || 'PHNOM PENH',
-      enabled: $('bakongAutoEnabled').checked,
+      api_base_url: 'https://api-bakong.nbc.gov.kh',
+      account_id: accountId,
+      merchant_name: merchantName,
+      merchant_city: merchantCity,
+      enabled,
       updated_at: now
     };
 
-    const newToken = $('bakongApiToken').value.trim();
     if (newToken) bakongPayload.api_token = newToken;
 
     const [publicResult, bakongResult] = await Promise.all([
@@ -249,7 +259,7 @@
     if (error) return showStatus(error.message, 'error');
 
     $('bakongApiToken').value = '';
-    showStatus('បានរក្សាទុក DramaVers Pay + Bakong Auto Verify រួចហើយ។', 'success');
+    showStatus('បានរក្សាទុក Auto KHQR រួចហើយ។ Order ថ្មីនឹងបង្កើត QR និងពិនិត្យ Paid ដោយស្វ័យប្រវត្តិ។', 'success');
   }
 
   async function loadOrders() {
