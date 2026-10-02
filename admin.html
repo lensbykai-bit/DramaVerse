@@ -71,30 +71,38 @@
 
 
       <section class="panel">
-        <div class="section-title"><h2>💳 DramaVers Pay • Auto KHQR</h2><span class="hint">Dynamic KHQR តាម Order និងតម្លៃរឿង</span></div>
+        <div class="section-title"><h2>💳 DramaVers Pay • Auto KHQR</h2><span class="hint">Auto QR → Auto Verify → Paid → Telegram</span></div>
+        <p>រៀបចំតែព័ត៌មានសំខាន់ខាងក្រោម។ តម្លៃរឿង, Order Code, QR និងការពិនិត្យ Paid ប្រព័ន្ធធ្វើដោយស្វ័យប្រវត្តិ។</p>
         <form id="paymentSettingsForm" class="form-grid">
-          <div class="field"><label>Payment Provider</label><input id="payProvider" placeholder="KHQR" /></div>
-          <div class="field"><label>KHQR Mode</label><select id="payKhqrMode"><option value="individual">Individual</option><option value="merchant">Merchant</option></select></div>
-
-          <div class="field"><label>Bakong Account ID</label><input id="bakongAccountId" placeholder="yourname@bank" /></div>
-          <div class="field"><label>Merchant / Account Name</label><input id="payMerchant" placeholder="DramaVerse" /></div>
-          <div class="field"><label>Merchant City</label><input id="bakongMerchantCity" placeholder="PHNOM PENH" /></div>
-          <div class="field"><label>Mobile Number</label><input id="bakongMobile" placeholder="855..." /></div>
-          <div class="field"><label>Store Label</label><input id="bakongStoreLabel" placeholder="DramaVerse" /></div>
-          <div class="field"><label>Terminal Label</label><input id="bakongTerminalLabel" placeholder="Web" /></div>
-          <div class="field"><label>KHQR Expiry (នាទី)</label><input id="bakongExpiryMinutes" type="number" min="1" max="60" value="15" /></div>
-          <div class="field"><label>Merchant Category Code</label><input id="bakongMcc" placeholder="5999" /></div>
-
-          <div class="field"><label>Merchant ID <span style="color:var(--muted)">(Merchant mode)</span></label><input id="bakongMerchantId" placeholder="Merchant ID" /></div>
-          <div class="field"><label>Acquiring Bank / BIC <span style="color:var(--muted)">(Merchant mode)</span></label><input id="bakongAcquiringBank" placeholder="Bank BIC" /></div>
-
-          <div class="field"><label>Account Label</label><input id="payAccountLabel" placeholder="ឈ្មោះគណនី / ព័ត៌មានបន្ថែម" /></div>
-          <div class="field"><label>Static QR URL <span style="color:var(--muted)">(Fallback)</span></label><input id="payQrUrl" type="url" placeholder="https://.../khqr.png" /></div>
-
-          <div class="field full"><label>សេចក្តីណែនាំទូទាត់</label><textarea id="payInstructions"></textarea></div>
-          <div class="field full"><label class="switch"><input id="payEnabled" type="checkbox" checked /> បើក DramaVers Pay / Auto KHQR</label></div>
-          <div class="field full"><p style="margin:0;color:var(--muted);font-size:11px">Auto KHQR នឹងយកចំនួនទឹកប្រាក់ពីតម្លៃរឿង ហើយបង្កើត QR ថ្មីសម្រាប់ Order នីមួយៗ។</p></div>
-          <div class="field full"><button class="btn" type="submit">💾 Save Auto KHQR</button></div>
+          <div class="field full">
+            <label>Bakong Account ID *</label>
+            <input id="bakongAccountId" placeholder="ឧ. yourname@bank" autocomplete="off" required />
+          </div>
+          <div class="field">
+            <label>Account / Merchant Name</label>
+            <input id="bakongMerchantName" value="DramaVerse" />
+          </div>
+          <div class="field">
+            <label>Merchant City</label>
+            <input id="bakongMerchantCity" value="PHNOM PENH" />
+          </div>
+          <div class="field">
+            <label>KHQR Expiry (នាទី)</label>
+            <input id="bakongExpiryMinutes" type="number" min="1" max="60" value="15" />
+          </div>
+          <div class="field full">
+            <label>Bakong Open API Token <span style="color:var(--muted)">(សម្រាប់ Auto Verify)</span></label>
+            <input id="bakongApiToken" type="password" autocomplete="new-password" placeholder="បញ្ចូល Token; ទុកទទេ = រក្សា Token ចាស់" />
+          </div>
+          <div class="field full">
+            <label class="switch"><input id="bakongAutoEnabled" type="checkbox" checked /> បើក Auto KHQR + Auto Verify</label>
+          </div>
+          <div class="field full">
+            <div style="padding:12px;border:1px solid var(--line);border-radius:12px;background:#091522;color:var(--muted);font-family:Battambang,sans-serif;font-size:11px;line-height:1.8">
+              ✓ Amount យកពីតម្លៃរឿង • ✓ QR ថ្មីសម្រាប់ Order នីមួយៗ • ✓ Expiry Auto • ✓ ពិនិត្យ Bakong Auto • ✓ Paid ហើយបង្ហាញ Telegram Link
+            </div>
+          </div>
+          <div class="field full"><button class="btn" type="submit">💾 Save & បើក Auto KHQR</button></div>
         </form>
       </section>
 
