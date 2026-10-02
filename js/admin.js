@@ -12,6 +12,7 @@
   const currentUser = $('currentUser');
 
   let editingId = null;
+  const ADMIN_REDIRECT_URL = 'https://lensbykai-bit.github.io/DramaVerse/admin.html';
 
   function showStatus(message, type = 'info') {
     if (!statusBox) return;
@@ -94,7 +95,11 @@
     const password = $('signupPassword').value;
     if (password.length < 8) return showStatus('Password ត្រូវមានយ៉ាងតិច 8 តួអក្សរ។', 'error');
 
-    const { data, error } = await db.auth.signUp({ email, password });
+    const { data, error } = await db.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: ADMIN_REDIRECT_URL }
+    });
     if (error) return showStatus(error.message, 'error');
 
     if (data.session) {
@@ -300,6 +305,12 @@
   db.auth.onAuthStateChange((_event, session) => {
     setTimeout(() => routeSession(session), 0);
   });
+
+  const authHash = new URLSearchParams(location.hash.replace(/^#/, ''));
+  if (authHash.get('error_code') === 'otp_expired') {
+    showStatus('Link បញ្ជាក់ Email បានផុតកំណត់។ សូមបង្កើត/ផ្ញើ Link ថ្មី ហើយចុច Link ថ្មីបំផុត។', 'error');
+    history.replaceState(null, '', location.pathname + location.search);
+  }
 
   resetMovieForm();
   getSession().then(routeSession);
