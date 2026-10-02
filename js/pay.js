@@ -205,6 +205,43 @@ import {
     $('instructions').textContent = data.instructions || 'សូមបង់តាមចំនួនទឹកប្រាក់ដែលបានបង្ហាញ។';
   }
 
+  async function checkBakongStatus(silent = true) {
+    if (!currentOrder || currentOrder.status !== 'pending') return;
+
+    try {
+      const { data, error } = await db.functions.invoke('bakong-order', {
+        body: {
+          action: 'status',
+          orderId,
+          accessToken: token
+        }
+      });
+
+      if (error) throw error;
+      if (!data) return;
+
+      if (data.status === 'paid') {
+        currentOrder.status = 'paid';
+        currentOrder.paid_at = data.paid_at || new Date().toISOString();
+        currentOrder.watch_url = data.watch_url || null;
+        renderStatus(currentOrder);
+        clearInterval(poller);
+        return;
+      }
+
+      if (data.status === 'expired' || data.status === 'cancelled') {
+        currentOrder.status = data.status;
+        renderStatus(currentOrder);
+        clearInterval(poller);
+      }
+    } catch (error) {
+      if (!silent) {
+        alert(error?.message || 'មិនអាចពិនិត្យការទូទាត់បានទេ។');
+      }
+      console.warn('Bakong status check:', error);
+    }
+  }
+
   async function loadOrder(silent = false) {
     try {
       const { data, error } = await db.rpc('get_checkout_order', {
@@ -249,7 +286,7 @@ import {
     } catch (_) {}
   });
 
-  $('refreshBtn')?.addEventListener('click', () => loadOrder(false));
+  $('refreshBtn')?.addEventListener('click', () => checkBakongStatus(false));
 
   if (!db) return fail('Supabase មិនទាន់ភ្ជាប់។');
   if (!parseHash()) return fail('Payment link មិនត្រឹមត្រូវ។');
@@ -257,6 +294,6 @@ import {
   Promise.all([loadSettings(), loadOrder(false)]).then(renderAutoKhqr);
 
   poller = setInterval(() => {
-    if (currentOrder?.status === 'pending') loadOrder(true);
+    if (currentOrder?.status === 'pending') checkBakongStatus(true);
   }, 5000);
 })();
