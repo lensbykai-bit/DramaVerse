@@ -110,6 +110,21 @@
     }
   }
 
+  async function resendConfirmation() {
+    clearStatus();
+    const email = $('signupEmail').value.trim();
+    if (!email) return showStatus('សូមបញ្ចូល Email ជាមុនសិន។', 'error');
+
+    const { error } = await db.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: ADMIN_REDIRECT_URL }
+    });
+
+    if (error) return showStatus(error.message, 'error');
+    showStatus('បានផ្ញើ Link បញ្ជាក់ Email ថ្មីរួចហើយ។ សូមប្រើ Link ថ្មីបំផុត។', 'success');
+  }
+
   async function activateAdmin(event) {
     event.preventDefault();
     clearStatus();
@@ -291,6 +306,7 @@
 
   $('loginForm')?.addEventListener('submit', login);
   $('signupForm')?.addEventListener('submit', signup);
+  $('resendConfirmBtn')?.addEventListener('click', resendConfirmation);
   $('activationForm')?.addEventListener('submit', activateAdmin);
   $('logoutBtn')?.addEventListener('click', logout);
   settingsForm?.addEventListener('submit', saveSettings);
