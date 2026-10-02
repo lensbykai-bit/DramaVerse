@@ -183,42 +183,73 @@
 
   async function loadPaymentSettings() {
     if (!paymentSettingsForm) return;
-    const { data, error } = await db
-      .from('payment_settings')
-      .select('*')
-      .eq('id', 1)
-      .maybeSingle();
+    const [publicResult, bakongResult] = await Promise.all([
+      db.from('payment_settings').select('*').eq('id', 1).maybeSingle(),
+      db.from('bakong_config')
+        .select('api_base_url,account_id,merchant_name,merchant_city,enabled')
+        .eq('id', 1)
+        .maybeSingle()
+    ]);
 
-    if (error || !data) return;
-    $('payProvider').value = data.provider_name || 'KHQR';
-    $('payMerchant').value = data.merchant_name || 'DramaVerse';
-    $('payAccountLabel').value = data.account_label || '';
-    $('payQrUrl').value = data.qr_image_url || '';
-    $('payInstructions').value = data.instructions || '';
-    $('payEnabled').checked = !!data.enabled;
+    const data = publicResult.data;
+    if (data) {
+      $('payProvider').value = data.provider_name || 'KHQR';
+      $('payMerchant').value = data.merchant_name || 'DramaVerse';
+      $('payAccountLabel').value = data.account_label || '';
+      $('payQrUrl').value = data.qr_image_url || '';
+      $('payInstructions').value = data.instructions || '';
+      $('payEnabled').checked = !!data.enabled;
+    }
+
+    const bakong = bakongResult.data;
+    if (bakong) {
+      $('bakongApiBase').value = bakong.api_base_url || 'https://api-bakong.nbc.gov.kh';
+      $('bakongAccountId').value = bakong.account_id || '';
+      $('bakongMerchantName').value = bakong.merchant_name || 'DramaVerse';
+      $('bakongMerchantCity').value = bakong.merchant_city || 'PHNOM PENH';
+      $('bakongAutoEnabled').checked = !!bakong.enabled;
+      $('bakongApiToken').value = '';
+    }
   }
 
   async function savePaymentSettings(event) {
     event.preventDefault();
     clearStatus();
 
-    const payload = {
+    const now = new Date().toISOString();
+    const publicPayload = {
       provider_name: $('payProvider').value.trim() || 'KHQR',
       merchant_name: $('payMerchant').value.trim() || 'DramaVerse',
       account_label: $('payAccountLabel').value.trim(),
       qr_image_url: $('payQrUrl').value.trim(),
       instructions: $('payInstructions').value.trim(),
       enabled: $('payEnabled').checked,
-      updated_at: new Date().toISOString()
+      updated_at: now
     };
 
-    const { error } = await db
-      .from('payment_settings')
-      .update(payload)
-      .eq('id', 1);
+    const bakongPayload = {
+      id: 1,
+      api_base_url: $('bakongApiBase').value.trim() || 'https://api-bakong.nbc.gov.kh',
+      account_id: $('bakongAccountId').value.trim(),
+      merchant_name: $('bakongMerchantName').value.trim() || 'DramaVerse',
+      merchant_city: $('bakongMerchantCity').value.trim() || 'PHNOM PENH',
+      enabled: $('bakongAutoEnabled').checked,
+      updated_at: now
+    };
 
+    const newToken = $('bakongApiToken').value.trim();
+    if (newToken) bakongPayload.api_token = newToken;
+
+    const [publicResult, bakongResult] = await Promise.all([
+      db.from('payment_settings').update(publicPayload).eq('id', 1),
+      db.from('bakong_config').upsert(bakongPayload, { onConflict: 'id' })
+    ]);
+
+    const error = publicResult.error || bakongResult.error;
     if (error) return showStatus(error.message, 'error');
-    showStatus('បានរក្សាទុក DramaVers Pay រួចហើយ។', 'success');
+
+    $('bakongApiToken').value = '';
+    showStatus('បានរក្សាទុក DramaVers Pay + Bakong Auto Verify រួចហើយ។', 'success');
   }
 
   async function loadOrders() {
@@ -307,7 +338,6 @@
       episode: $('movieEpisode').value.trim() || 'រឿងពេញ',
       description: $('movieDescription').value.trim(),
       poster_url: $('moviePoster').value.trim(),
-      watch_url: $('movieWatchUrl').value.trim() || '#',
       sort_order: Number($('movieSort').value || 0),
       is_published: $('moviePublished').checked,
       updated_at: new Date().toISOString()
@@ -315,16 +345,29 @@
 
     if (!payload.title) return showStatus('សូមបញ្ចូលចំណងជើងរឿង។', 'error');
 
+    const telegramUrl = $('movieWatchUrl').value.trim() || '#';
+    const movieId = editingId || `dv-${Date.now()}`;
+
     let error;
     if (editingId) {
-      ({ error } = await db.from('movies').update(payload).eq('id', editingId));
+      ({ error } = await db.from('movies').update(payload).eq('id', movieId));
     } else {
-      payload.id = `dv-${Date.now()}`;
+      payload.id = movieId;
       ({ error } = await db.from('movies').insert(payload));
     }
 
     if (error) return showStatus(error.message, 'error');
-    showStatus(editingId ? 'បានកែរឿងរួចហើយ។' : 'បានបន្ថែមរឿងថ្មីរួចហើយ។', 'success');
+
+    const { error: deliveryError } = await db
+      .from('movie_delivery')
+      .upsert({
+        movie_id: movieId,
+        telegram_url: telegramUrl,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'movie_id' });
+
+    if (deliveryError) return showStatus(deliveryError.message, 'error');
+    showStatus(editingId ? 'បានកែរឿង និង Telegram Link រួចហើយ។' : 'បានបន្ថែមរឿងថ្មីរួចហើយ។', 'success');
     resetMovieForm();
     await loadMovies();
   }
@@ -383,7 +426,7 @@
     $('movieEpisode').value = movie.episode || '';
     $('movieDescription').value = movie.description || '';
     $('moviePoster').value = movie.poster_url || '';
-    $('movieWatchUrl').value = movie.watch_url || '';
+    $('movieWatchUrl').value = movie.telegram_url || '';
     $('movieSort').value = movie.sort_order ?? 0;
     $('moviePublished').checked = !!movie.is_published;
     setCategories(movie.category || []);
