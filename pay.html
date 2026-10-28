@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#07101a" />
-  <title>DramaVers Pay</title>
+  <title>PiPhop Pay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&family=Battambang:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{--bg:#060d16;--panel:#0d1926;--panel2:#0a1420;--line:#22364a;--text:#f8fbff;--muted:#96a9bc;--pink:#ff1764;--pink2:#d70b82;--cyan:#26bfff;--green:#26d58f;--gold:#ffd34b;--danger:#ff5c72}
     *{box-sizing:border-box}body{margin:0;min-height:100vh;background:
@@ -22,12 +22,13 @@
     .qr-box{min-height:320px;border:1px dashed #31506b;border-radius:18px;background:radial-gradient(circle,rgba(38,191,255,.07),transparent 60%),#07121e;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center}.qr-box img{display:block;max-width:100%;width:290px;aspect-ratio:1/1;object-fit:contain;border-radius:16px;background:#fff;padding:8px}.qr-empty{font-family:Battambang,sans-serif;color:var(--muted);line-height:1.8}.provider{text-align:center;margin:12px 0 4px;font-weight:800}.account{text-align:center;color:var(--muted);font-size:11px}.instruction{margin-top:12px;padding:12px;border-radius:13px;background:#091522;border:1px solid #1e3246;color:#c6d2de;font-family:Battambang,sans-serif;font-size:12px;line-height:1.8}
     .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.btn{border:0;border-radius:12px;padding:12px 14px;font-family:Battambang,sans-serif;font-weight:800;cursor:pointer;text-decoration:none;text-align:center}.primary{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;flex:1}.secondary{background:#132334;border:1px solid var(--line);color:#e7eef5}.watch{display:none;background:linear-gradient(135deg,#16b978,#21d89b);color:#04150f;flex:1}.watch.show{display:block}.notice{margin-top:14px;color:var(--muted);font-family:Battambang,sans-serif;font-size:11px;line-height:1.75}.error{padding:16px;border:1px solid rgba(255,92,114,.35);border-radius:14px;background:rgba(255,92,114,.08);color:#ffc2ca;font-family:Battambang,sans-serif}
     @media(max-width:780px){.shell{grid-template-columns:1fr}.side{order:-1}.qr-box{min-height:280px}.movie h1{font-size:19px}.amount{font-size:32px}}@media(max-width:480px){.wrap{padding:12px 10px 34px}.brand{font-size:21px}.movie{grid-template-columns:74px minmax(0,1fr)}.poster{width:74px}.order-info{grid-template-columns:1fr}.main,.side{padding:14px}.qr-box img{width:250px}}
+    [hidden]{display:none!important} body{font-family:"Kantumruy Pro",Inter,sans-serif} .brand{text-decoration:none;color:inherit} .watch{font-family:"Kantumruy Pro",sans-serif}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="top">
-      <div class="brand">DramaVers <span>Pay</span><small>Secure checkout for DramaVerse</small></div>
+      <a class="brand" href="./">ពិភពរឿង <span>Pay</span><small>PiPhop Roeung · KHQR</small></a>
       <a class="back" href="./">← Website</a>
     </header>
 
@@ -35,7 +36,7 @@
 
     <main class="shell" id="checkout" hidden>
       <section class="card main">
-        <div class="pay-logo"><i>▶</i> DramaVers Pay</div>
+        <div class="pay-logo"><i>▶</i> PiPhop Pay</div>
         <div class="movie">
           <div class="poster" id="poster"></div>
           <div>
@@ -56,14 +57,14 @@
 
         <div class="actions">
           <button class="btn primary" id="refreshBtn" type="button">🔄 ពិនិត្យការទូទាត់</button>
-          <a class="btn watch" id="watchBtn" href="#" target="_blank" rel="noopener">▶ មើលរឿងឥឡូវនេះ</a>
+          <a class="btn watch" id="watchBtn" href="#" target="_blank" rel="noopener">▶ ចូលមើលរឿងពេញក្នុង Telegram</a>
         </div>
-        <div class="notice">ស្កេន KHQR ហើយបង់តាមចំនួនទឹកប្រាក់ដែលបានបង្ហាញ។ ប្រព័ន្ធនឹងពិនិត្យ Bakong ដោយស្វ័យប្រវត្តិ ហើយបើ Paid ត្រឹមត្រូវ នឹងបើក Telegram រឿងពេញដោយស្វ័យប្រវត្តិ។ Telegram Link ត្រូវបានលាក់រហូតដល់បង់ជោគជ័យ។</div>
+        <div class="notice">ស្កេន KHQR ហើយបង់តាមចំនួនទឹកប្រាក់ដែលបានបង្ហាញ។ ប្រព័ន្ធនឹងពិនិត្យ Bakong ដោយស្វ័យប្រវត្តិ ហើយបង្ហាញប៊ូតុងចូលមើលក្នុង Telegram ក្រោយបញ្ជាក់ប្រាក់ជោគជ័យ។ Telegram Link ត្រូវបានលាក់រហូតដល់បង់ជោគជ័យ។</div>
       </section>
 
       <aside class="card side">
         <div class="qr-box" id="qrBox"><div class="qr-empty">កំពុងផ្ទុកវិធីទូទាត់...</div></div>
-        <div class="provider" id="providerName">DramaVers Pay</div>
+        <div class="provider" id="providerName">PiPhop Pay</div>
         <div class="account" id="accountLabel"></div>
         <div class="instruction" id="instructions">សូមបង់តាមចំនួនទឹកប្រាក់ដែលបានបង្ហាញ។</div>
       </aside>
@@ -72,7 +73,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <script src="js/pay.js"></script>
+
+  <script type="module" src="js/pay.js"></script>
 </body>
 </html>

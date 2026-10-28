@@ -11,6 +11,8 @@
 
   let movies = [];
   let activeFilter = 'all';
+  let previousFocus = null;
+  let fallbackMode = false;
 
   function esc(value = '') {
     return String(value)
@@ -55,17 +57,17 @@
   function card(movie) {
     const first = (movie.title || 'D').trim().charAt(0) || 'D';
     return `
-      <article class="movie-card" data-id="${esc(movie.id)}">
+      <button type="button" class="movie-card" data-id="${esc(movie.id)}" aria-label="${esc(movie.title)}">
         <div class="movie-poster" ${posterStyle(movie)}>
           ${movie.poster ? '' : `<span class="poster-letter">${esc(first)}</span>`}
           <span class="movie-badge ${badgeClass(movie)}">${esc(movie.badge || 'NEW')}</span>
           <div class="movie-overlay"><div class="movie-title">${esc(movie.title)}</div></div>
         </div>
         <div class="movie-info">
-          <span class="stars">★★★★★</span><span class="score">${esc(movie.rating || '4.9')}</span>
+          <span class="card-price">${esc(movie.price || '—')}</span>
           <div class="episode">${esc(movie.episode || 'រឿងពេញ')}</div>
         </div>
-      </article>`;
+      </button>`;
   }
 
   function topItem(movie, index) {
@@ -74,7 +76,7 @@
       <div class="topitem" data-id="${esc(movie.id)}">
         <span class="rank ${index === 0 ? 'first' : ''}">${index + 1}</span>
         <span class="topthumb" ${style}></span>
-        <span><div class="topname">${esc(movie.title)}</div><div class="topsmall">★ ${esc(movie.rating || '4.9')}</div></span>
+        <span><div class="topname">${esc(movie.title)}</div><div class="topsmall">★ ${esc(movie.rating || '—')}</div></span>
       </div>`;
   }
 
@@ -102,13 +104,15 @@
 
   function openMovie(movie) {
     if (!movie || !modal) return;
+    previousFocus = document.activeElement;
+    document.getElementById('checkoutMessage').textContent = fallbackMode ? 'កំពុងបង្ហាញទិន្នន័យគំរូ។ ការទូទាត់មិនទាន់អាចប្រើបានទេ។' : '';
     const poster = document.getElementById('modalPoster');
     document.getElementById('modalTitle').textContent = movie.title || 'DramaVerse';
     document.getElementById('modalBadge').textContent = movie.badge || 'DramaVerse';
-    document.getElementById('modalRating').textContent = `★★★★★ ${movie.rating || '4.9'}`;
+    document.getElementById('modalRating').textContent = movie.rating ? `★ ${movie.rating}` : '';
     document.getElementById('modalEpisode').textContent = movie.episode || 'រឿងពេញ';
     document.getElementById('modalDescription').textContent = movie.description || '';
-    document.getElementById('modalPrice').textContent = movie.price || '2,000៛';
+    document.getElementById('modalPrice').textContent = movie.price || '—';
 
     if (poster) {
       poster.style.backgroundImage = movie.poster
@@ -117,10 +121,10 @@
     }
 
     const watchBtn = document.getElementById('modalWatch');
-    watchBtn.disabled = false;
-    watchBtn.textContent = '💳 ទិញរឿង • DramaVers Pay';
+    watchBtn.disabled = fallbackMode || !db;
+    watchBtn.textContent = fallbackMode ? 'ទិន្នន័យគំរូ · មិនអាចទិញបាន' : 'ទិញរឿងតាម KHQR';
     watchBtn.onclick = async () => {
-      if (!db) return;
+      if (!db || fallbackMode) return;
       const original = watchBtn.textContent;
       watchBtn.disabled = true;
       watchBtn.textContent = 'កំពុងបង្កើត Order...';
@@ -137,7 +141,7 @@
         location.href = `pay.html#${order.order_id}:${order.access_token}`;
       } catch (error) {
         console.error(error);
-        alert(error.message || 'មិនអាចបង្កើត Order បានទេ។');
+        document.getElementById('checkoutMessage').textContent = 'មិនអាចចាប់ផ្ដើមការទូទាត់បានទេ។ សូមសាកម្ដងទៀត។';
         watchBtn.disabled = false;
         watchBtn.textContent = original;
       }
@@ -154,12 +158,14 @@
     };
 
     modal.classList.add('show');
+    closeBtn?.focus();
     document.body.style.overflow = 'hidden';
     history.replaceState(null, '', `#${encodeURIComponent(movie.id)}`);
   }
 
   function closeMovie() {
     modal?.classList.remove('show');
+    previousFocus?.focus();
     document.body.style.overflow = '';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   }
@@ -175,7 +181,7 @@
     if (title && settings.hero_title) title.innerHTML = esc(settings.hero_title).replaceAll('\n', '<br />');
     if (description && settings.hero_description) description.textContent = settings.hero_description;
     if (button && settings.hero_button_text) button.textContent = settings.hero_button_text;
-    if (settings.site_name) document.title = `${settings.site_name} — AI Drama`;
+    document.title = 'ពិភពរឿង — PiPhop Roeung';
   }
 
   function mapMovie(row) {
@@ -199,7 +205,12 @@
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     movies = Array.isArray(data.movies) ? data.movies : [];
-    if (telegramMain && data.settings?.telegramUrl) telegramMain.href = data.settings.telegramUrl;
+    fallbackMode = true;
+    const notice = document.getElementById('catalogNotice');
+    notice.hidden = false;
+    notice.textContent = 'ទិន្នន័យគំរូ · មិនទាន់ភ្ជាប់បញ្ជីរឿងផ្ទាល់។ ការទូទាត់ត្រូវបានបិទសម្រាប់ទិន្នន័យនេះ។';
+    if (telegramMain && data.settings?.telegramUrl && data.settings.telegramUrl !== 'https://t.me/') telegramMain.href = data.settings.telegramUrl;
+    else if (telegramMain) telegramMain.hidden = true;
   }
 
   async function loadData() {
@@ -229,7 +240,8 @@
     }
 
     render();
-    const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+    let id = '';
+    try { id = decodeURIComponent(location.hash.replace(/^#/, '')); } catch (_) {}
     if (id) openMovie(movies.find(m => m.id === id));
   }
 
@@ -252,6 +264,12 @@
   });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeMovie();
+    if (event.key === 'Tab' && modal?.classList.contains('show')) {
+      const items = [...modal.querySelectorAll('button:not(:disabled),a[href]')].filter(el => !el.hidden);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
   });
 
   document.documentElement.dataset.theme = 'dark';

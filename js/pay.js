@@ -1,3 +1,4 @@
+import QRCode from 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm';
 import {
   BakongKHQR as BakongKHQRClass,
   khqrData,
@@ -26,7 +27,8 @@ import {
   }
 
   function parseHash() {
-    const raw = decodeURIComponent(location.hash.replace(/^#/, ''));
+    let raw;
+    try { raw = decodeURIComponent(location.hash.replace(/^#/, '')); } catch (_) { return false; }
     const [id, access] = raw.split(':');
     if (!id || !access) return false;
     orderId = id;
@@ -49,14 +51,24 @@ import {
     $('statusText').textContent = labels[status] || status;
     $('refreshBtn').disabled = status === 'paid' || status === 'cancelled' || status === 'expired';
 
-    if (status === 'paid' && order.watch_url) {
-      $('watchBtn').href = order.watch_url;
+    let telegramUrl = null;
+    try { const url = new URL(order.watch_url); if (url.protocol === 'https:' && url.hostname === 't.me' && !url.username && !url.password) telegramUrl = url.href; } catch (_) {}
+    if (status === 'paid' && telegramUrl) {
+      $('watchBtn').href = telegramUrl;
+      clearInterval(timer);
+      $('countdown').textContent = 'ការទូទាត់បានជោគជ័យ';
       $('watchBtn').classList.add('show');
       $('refreshBtn').hidden = true;
       const box = $('qrBox');
       if (box) box.innerHTML = '<div class="qr-empty"><b style="color:#8ff0c6;font-size:20px">✓ Paid</b><br/>ការទូទាត់បានបញ្ជាក់រួចហើយ។</div>';
     } else {
       $('watchBtn').classList.remove('show');
+      $('watchBtn').removeAttribute('href');
+      if (status === 'paid') {
+        $('qrBox').textContent = 'ទូទាត់ជោគជ័យ។ កំពុងរៀបចំតំណ Telegram…';
+        $('refreshBtn').disabled = false;
+        $('refreshBtn').textContent = 'ពិនិត្យតំណ Telegram';
+      }
     }
   }
 
@@ -166,18 +178,9 @@ import {
       if (!qr || !md5) throw new Error('Bakong KHQR SDK មិនអាចបង្កើត QR បាន។');
 
       const box = $('qrBox');
-      box.innerHTML = '<div id="dynamicKhqr" style="background:#fff;padding:10px;border-radius:16px"></div>';
+      box.innerHTML = '<canvas id="dynamicKhqr" aria-label="KHQR សម្រាប់ការបញ្ជាទិញនេះ" style="max-width:100%;height:auto;border-radius:12px"></canvas>';
 
-      if (!window.QRCode) throw new Error('QR renderer មិនទាន់ផ្ទុក។');
-
-      new window.QRCode($('dynamicKhqr'), {
-        text: qr,
-        width: 280,
-        height: 280,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: window.QRCode.CorrectLevel.M
-      });
+      await QRCode.toCanvas($('dynamicKhqr'), qr, { width: 280, margin: 2, errorCorrectionLevel: 'M' });
 
       khqrKey = key;
       await attachKhqr(md5, qr);
@@ -266,7 +269,7 @@ import {
       }
 
       renderStatus(order);
-      startCountdown(order.expires_at);
+      if (order.status === 'pending') startCountdown(order.expires_at);
 
       if (order.status === 'pending') {
         await renderAutoKhqr();
@@ -286,7 +289,7 @@ import {
     } catch (_) {}
   });
 
-  $('refreshBtn')?.addEventListener('click', () => checkBakongStatus(false));
+  $('refreshBtn')?.addEventListener('click', () => currentOrder?.status === 'paid' ? loadOrder(false) : checkBakongStatus(false));
 
   if (!db) return fail('Supabase មិនទាន់ភ្ជាប់។');
   if (!parseHash()) return fail('Payment link មិនត្រឹមត្រូវ។');
