@@ -14,7 +14,7 @@
   const ordersList = $('ordersList');
 
   let editingId = null;
-  const ADMIN_REDIRECT_URL = 'https://lensbykai-bit.github.io/DramaVerse/admin.html';
+  const ADMIN_REDIRECT_URL = new URL('admin.html', location.href).href;
 
   function showStatus(message, type = 'info') {
     if (!statusBox) return;
