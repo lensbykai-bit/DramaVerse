@@ -4,23 +4,50 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#07101a" />
-  <title>PiPhop Roeung Admin</title>
+  <title>ពិភពរឿង — Admin</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand-mark.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&family=Battambang:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{--bg:#07101a;--panel:#0d1926;--panel2:#101f2f;--line:#24384e;--text:#f8fbff;--muted:#92a4b7;--pink:#ff1764;--pink2:#d70b82;--danger:#ff5067;--green:#2ed38b}
     *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,rgba(255,23,100,.08),transparent 24%),var(--bg);color:var(--text);font-family:Inter,Battambang,sans-serif;min-height:100vh}button,input,textarea,select{font:inherit}button{color:inherit}a{color:inherit;text-decoration:none}[hidden]{display:none!important}.wrap{width:min(1180px,100%);margin:auto;padding:24px 16px 50px}.head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{font-size:26px;font-weight:900}.brand span{color:var(--pink)}.head-right{display:flex;align-items:center;gap:9px}.back,.ghost{border:1px solid var(--line);border-radius:11px;background:#101d2b;padding:10px 13px;cursor:pointer}.user{color:var(--muted);font-size:12px}.status{margin:0 0 16px;padding:12px 14px;border-radius:12px;border:1px solid #2c4258;background:#101d2a;font-family:Battambang,sans-serif}.status.success{border-color:rgba(46,211,139,.45);background:rgba(46,211,139,.08);color:#aef3d2}.status.error{border-color:rgba(255,80,103,.45);background:rgba(255,80,103,.08);color:#ffc3cc}.panel{background:linear-gradient(145deg,#0d1926,#0a1520);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 16px 45px rgba(0,0,0,.14)}.panel h2{margin:0 0 12px;font-family:Battambang,sans-serif;font-size:20px}.panel p{font-family:Battambang,sans-serif;color:var(--muted);line-height:1.8}.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-family:Battambang,sans-serif;font-size:12px;color:#cbd6e1}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:11px;background:#08121d;color:#fff;padding:11px 12px;outline:none}.field textarea{min-height:100px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#7c3654;box-shadow:0 0 0 3px rgba(255,23,100,.08)}.btn{border:0;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:Battambang,sans-serif;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff}.btn.secondary{background:#142333;border:1px solid var(--line)}.btn.danger{background:#32131a;border:1px solid #6b2633}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.category-row{display:flex;gap:8px;flex-wrap:wrap}.check{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#0b1723;border-radius:999px;padding:8px 11px;font-size:12px}.switch{display:flex;align-items:center;gap:8px;margin-top:5px}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px}.movie-list{display:flex;flex-direction:column;gap:9px}.movie-row{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #1f3245;background:#0b1722;border-radius:13px;padding:9px}.thumb{width:50px;height:66px;border-radius:9px;background:linear-gradient(145deg,#41203f,#142a3b);background-size:cover;background-position:center}.movie-row-main{min-width:0;display:flex;flex-direction:column;gap:3px}.movie-row-main strong{font-family:Battambang,sans-serif;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.movie-row-main span,.movie-row-main small{font-size:10px;color:var(--muted)}.row-actions{display:flex;gap:6px}.small-btn{border:1px solid var(--line);background:#142230;border-radius:9px;padding:7px 9px;cursor:pointer;font-family:Battambang,sans-serif;font-size:11px}.small-btn.delete{border-color:#5c2630;color:#ff9aaa}.empty{padding:16px;color:var(--muted);font-family:Battambang,sans-serif}.setup-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.section-title h2{margin:0}.hint{font-size:11px;color:var(--muted);font-family:Battambang,sans-serif}.orders-list{display:flex;flex-direction:column;gap:8px}.order-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid #1f3245;background:#0b1722;border-radius:13px;padding:11px}.order-main{min-width:0}.order-main strong{display:block;font-size:13px}.order-main span,.order-main small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.order-actions{display:flex;gap:6px;align-items:center}.pill{display:inline-flex;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800}.pill.pending{color:#ffd873;background:rgba(255,190,0,.10)}.pill.paid{color:#8ff0c6;background:rgba(46,211,139,.10)}.pill.expired,.pill.cancelled{color:#ff9aaa;background:rgba(255,80,103,.10)}@media(max-width:900px){.dashboard-grid{grid-template-columns:1fr}.auth-grid{grid-template-columns:1fr}}@media(max-width:640px){.wrap{padding:16px 10px 40px}.head{align-items:flex-start}.brand{font-size:22px}.user{display:none}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.movie-row{grid-template-columns:42px minmax(0,1fr)}.thumb{width:42px;height:58px}.row-actions{grid-column:1/-1;justify-content:flex-end}.head-right{flex-wrap:wrap;justify-content:flex-end}}
+
+    /* PiPhop Roeung identity shared with the storefront. */
+    :root{--bg:#0e1018;--panel:#171923;--panel2:#1c1e2a;--line:#30313e;--muted:#aaa7bc;--pink:#ff8056;--pink2:#f64380}
+    body{background:radial-gradient(ellipse at 85% 0,#f643800b,transparent 40%),var(--bg);font-family:"Kantumruy Pro",Inter,sans-serif}
+    button,input,textarea,select,.panel h2,.panel p,.field label,.status,.btn,.hint,.small-btn,.empty,.movie-row-main strong{font-family:"Kantumruy Pro",Inter,sans-serif}
+    .wrap{width:min(1280px,100%);padding:28px 28px 64px}
+    .head{padding-bottom:24px;border-bottom:1px solid #ffffff10;margin-bottom:32px}
+    .admin-brand{display:flex;gap:14px;align-items:center;font-size:26px;font-weight:700;min-width:0}
+    .admin-brand img{flex:none;object-fit:contain}
+    .admin-brand-copy{display:flex;flex-direction:column;gap:4px}
+    .brand .admin-brand-copy{color:#fff}
+    .admin-brand strong{font-size:27px;font-weight:700;line-height:1.5}
+    .admin-brand small{font:10px Inter,sans-serif;letter-spacing:1.6px;color:var(--muted)}
+    .panel{background:linear-gradient(145deg,#191b26,#141620);border-color:#ffffff13;box-shadow:none;padding:28px;border-radius:18px}
+    .panel h2{font-size:22px;font-weight:600;line-height:1.7;margin-bottom:12px}
+    .panel p{font-size:14px;line-height:1.9;margin-bottom:24px}
+    .auth-grid{gap:24px;align-items:start}
+    .field{gap:8px;margin-bottom:14px}.field label{font-size:13px}
+    .field input,.field textarea,.field select{background:#10121b;border-color:#ffffff20;min-height:48px;border-radius:10px}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:#ff8e87;box-shadow:0 0 0 3px #ff80561a}
+    .btn{font-weight:600;border-radius:10px;padding:13px 20px}
+    .btn.secondary,.ghost,.back,.small-btn{background:#ffffff05;border-color:#ffffff20}
+    .ghost,.back{font-size:13px}.actions{gap:12px}
+    .check,.movie-row,.order-row{background:#10121b;border-color:#ffffff15}
+    :focus-visible{outline:2px solid #ff9b8c;outline-offset:4px}
+    @media(max-width:640px){.wrap{padding:20px 16px 40px}.head{gap:12px;flex-wrap:wrap}.admin-brand strong{font-size:24px}.admin-brand small{font-size:9px}.panel{padding:22px 18px}.panel h2{font-size:20px}.head-right{margin-left:auto}.auth-grid{gap:16px}.row-actions{flex-wrap:wrap}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="head">
-      <div class="brand">Drama<span>Verse</span> Admin</div>
+      <a class="brand admin-brand" href="./" aria-label="ពិភពរឿង — ទំព័រដើម"><img src="assets/brand-mark.svg" width="42" height="50" alt="" /><span class="admin-brand-copy"><strong>ពិភពរឿង</strong><small>PiPhop Roeung · Admin</small></span></a>
       <div class="head-right">
         <span class="user" id="currentUser"></span>
         <button class="ghost" id="logoutBtn" type="button">ចាកចេញ</button>
-        <a class="back" href="./">← Website</a>
+        <a class="back" href="./">← ទៅវេបសាយ</a>
       </div>
     </header>
 
@@ -30,16 +57,16 @@
       <div class="auth-grid">
         <form class="panel" id="loginForm">
           <h2>🔐 ចូល Admin</h2>
-          <p>Login ដោយ Email និង Password របស់ Admin។</p>
-          <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="email" required /></div>
-          <div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required /></div>
+          <p>ចូលគណនីដើម្បីគ្រប់គ្រងរឿង តម្លៃ និងការបញ្ជាទិញ។</p>
+          <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" required /></div>
+          <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required /></div>
           <div class="actions"><button class="btn" type="submit">ចូល Admin</button></div>
         </form>
 
         <form class="panel" id="signupForm">
           <h2>✨ បង្កើត Admin Account ដំបូង</h2>
           <p>ប្រើតែពេល Setup លើកដំបូង។ បន្ទាប់ពីបង្កើត Account ត្រូវបញ្ចូល Setup Code ម្តងទៀត។</p>
-          <div class="field"><label>Email</label><input id="signupEmail" type="email" autocomplete="email" required /></div>
+          <div class="field"><label for="signupEmail">Email</label><input id="signupEmail" type="email" autocomplete="email" required /></div>
           <div class="field"><label>Password (យ៉ាងតិច 8 តួ)</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="8" required /></div>
           <div class="actions"><button class="btn secondary" type="submit">បង្កើត Account</button><button class="ghost" id="resendConfirmBtn" type="button">ផ្ញើ Link បញ្ជាក់ម្តងទៀត</button></div>
         </form>
